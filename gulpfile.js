@@ -22,18 +22,11 @@ var PATHS = {
             './node_modules/angular2/node_modules/traceur/bin/traceur-runtime.js',
             './node_modules/es6-module-loader/dist/es6-module-loader-sans-promises.js',
             './node_modules/reflect-metadata/Reflect.js',
-            './node_modules/systemjs/dist/system.src.js'
-        ],
-        dest: path.join( BASE_PATHS.dest, 'vendor' )
-    },
-    systemConfig: {
-        sources: path.join( BASE_PATHS.sources, 'system.config.js')
-    },
-    angular: {
-        sources: [
+            './node_modules/systemjs/dist/system.src.js',
             './node_modules/angular2/bundles/angular2.dev.js',
             './node_modules/angular2/bundles/router.dev.js'
-        ]
+        ],
+        dest: path.join( BASE_PATHS.dest, 'vendor' )
     }
 }
 
@@ -49,18 +42,26 @@ gulp.task( 'clean:dest', function( callback ) {
     del( [ BASE_PATHS.dest ], callback );
 });
 
+/**
+ * Prepare css
+ */
+gulp.task('stylesheets', function () {
+    var postcss = require('gulp-postcss');
+    return gulp.src( path.join( BASE_PATHS.sources, '**/*.css' ) )
+        .pipe( plugins.postcss([
+            plugins.cssnext,
+            require('postcss-import')( { path: [ path.join( BASE_PATHS.sources, 'components/app/styles' ) ] } )
+        ]) )
+        .pipe( gulp.dest( BASE_PATHS.dest ) );
+});
 
 /**
  * Compile Typescript files to javascript
  */
 gulp.task('compile:typescript', function() {
-  var result = gulp.src(path.join( BASE_PATHS.sources, '**/*ts'))
+  return gulp.src(path.join( BASE_PATHS.sources, '**/*ts'))
     .pipe( plugins.plumber() )
-    .pipe( plugins.sourcemaps.init() )
-    .pipe( plugins.typescript( tsProject ) );
-
-  return result.js
-    .pipe( plugins.sourcemaps.write() )
+    .pipe( plugins.typescript( tsProject ) )
     .pipe( gulp.dest( BASE_PATHS.dest ) );
 });
 
@@ -75,16 +76,7 @@ gulp.task('copy:index', function() {
     .pipe( gulp.dest( BASE_PATHS.dest ) );
 });
 
-gulp.task('copy:css', function() {
-    return gulp.src( [
-        path.join( BASE_PATHS.sources, '**/*.css')
-    ])
-    .pipe( gulp.dest( BASE_PATHS.dest ) );
-});
-
 gulp.task('copy:libs', function() {
-    PATHS.libs.sources = PATHS.libs.sources.concat(  PATHS.systemConfig.sources, PATHS.angular.sources );
-
     return gulp.src( PATHS.libs.sources )
         .pipe( gulp.dest( PATHS.libs.dest ) );
 });
@@ -102,12 +94,29 @@ gulp.task('injectFilesIntoIndex', function() {
 });
 
 
+/**
+ * Serve app
+ */
+gulp.task('connect', function() {
+    plugins.connect.server( {
+        fallback: path.join( BASE_PATHS.dest, 'index.html' ),
+        root: BASE_PATHS.dest
+    } );
+});
+
+
 gulp.task('default',
     gulp.series(
         'clean:dest',
         'copy:libs',
         'compile:typescript',
         'copy:index',
-        'copy:css'
+        'stylesheets'
+    )
+);
+
+gulp.task( 'serve',
+    gulp.series(
+        'connect'
     )
 );
