@@ -1,5 +1,6 @@
 import { Component, View, bootstrap } from 'angular2/angular2';
-import { RouteConfig, RouterOutlet, RouterLink, routerInjectables } from 'angular2/router';
+import { RouteConfig } from 'angular2/router';
+import { ROUTER_BINDINGS, ROUTER_DIRECTIVES } from 'angular2/router';
 
 import { Start } from '../start/start';
 import { Impressum } from '../impressum/impressum';
@@ -9,16 +10,16 @@ import { Impressum } from '../impressum/impressum';
 })
 
 @RouteConfig([
-    { path: '/', component: Start, as: 'start' },
-    { path: '/impressum', component: Impressum, as: 'impressum' }
+    { path: '/',            component: Start,       as: 'start' },
+    { path: '/impressum',   component: Impressum,   as: 'impressum' }
 ])
 
 @View({
     templateUrl: 'components/app/app.html',
-    directives: [ RouterOutlet, RouterLink ]
+    directives: [ ROUTER_DIRECTIVES ]
 })
 
 class App {}
 
 
-bootstrap( App, [ routerInjectables ] );
+bootstrap( App, [ROUTER_BINDINGS] );
