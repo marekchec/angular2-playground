@@ -1,5 +1,9 @@
 @import "../impressum/impressum.css";
 
-.test {
-    background: #f00;
+:root {
+    --mainColor: red;
+}
+
+a {
+    color: var(--mainColor);
 }

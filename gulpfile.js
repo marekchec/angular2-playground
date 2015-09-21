@@ -49,7 +49,9 @@ gulp.task('stylesheets', function () {
     var postcss = require('gulp-postcss');
     return gulp.src( path.join( BASE_PATHS.sources, '**/*.css' ) )
         .pipe( plugins.postcss([
-            plugins.cssnext,
+            require('gulp-cssnext'),
+            require('postcss-css-variables'),
+            require('autoprefixer'),
             require('postcss-import')( { path: [ path.join( BASE_PATHS.sources, 'components/app/styles' ) ] } )
         ]) )
         .pipe( gulp.dest( BASE_PATHS.dest ) );
