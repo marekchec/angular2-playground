@@ -16,16 +16,16 @@
     "gulp-load-plugins": "^1.0.0-rc.1",
     "gulp-plumber": "~1.0.1",
     "gulp-postcss": "^6.0.0",
-    "gulp-typescript": "~2.7.5",
+    "gulp-typescript": "~2.9.0",
     "postcss-import": "^7.0.0",
-    "systemjs": "^0.18.17",
-    "typescript": "~1.5.3"
+    "typescript": "^1.6.2",
+    "tsd": "^0.6.4"
   },
   "dependencies": {
-    "angular2": "2.0.0-alpha.35",
+    "angular2": "2.0.0-alpha.37",
     "es6-module-loader": "^0.15.0",
     "reflect-metadata": "0.1.0",
-    "systemjs": "^0.18.11",
-    "zone.js": "^0.4.1"
+    "systemjs": "^0.18.17",
+    "zone.js": "^0.5.4"
   }
 }
