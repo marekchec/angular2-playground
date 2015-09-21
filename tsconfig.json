@@ -10,7 +10,6 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "sourceMap": true,
-        "listFiles": true,
-        "outDir": "dest"
+        "listFiles": true
     }
 }
