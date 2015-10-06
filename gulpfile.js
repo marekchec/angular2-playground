@@ -9,6 +9,11 @@ var plugins             = gulpLoadPlugins( {
 });
 
 /**
+ * Prefixes
+ */
+var svgPrefix = 'icon-';
+
+/**
  * Paths
  */
 var BASE_PATHS = {
@@ -27,6 +32,9 @@ var PATHS = {
             './node_modules/angular2/bundles/router.dev.js'
         ],
         dest: path.join( BASE_PATHS.dest, 'vendor' )
+    },
+    svgs: {
+        sources: path.join( BASE_PATHS.sources, 'assets/svgs/*.svg' )
     }
 }
 
@@ -42,6 +50,7 @@ gulp.task( 'clean:dest', function( callback ) {
     del( [ BASE_PATHS.dest ], callback );
 });
 
+
 /**
  * Prepare css
  */
@@ -56,6 +65,7 @@ gulp.task('stylesheets', function () {
         ]) )
         .pipe( gulp.dest( BASE_PATHS.dest ) );
 });
+
 
 /**
  * Compile Typescript files to javascript
@@ -97,6 +107,25 @@ gulp.task('injectFilesIntoIndex', function() {
 
 
 /**
+ * Svg store
+ */
+gulp.task( 'svgstore', function() {
+    var svgs = gulp.src( PATHS.svgs.sources )
+        .pipe( plugins.rename( { prefix: svgPrefix } ) )
+        .pipe( plugins.svgmin() )
+        .pipe( plugins.svgstore( { inlineSvg: true } ) );
+
+    function fileContents ( filePath, file ) {
+        return file.contents.toString();
+    };
+
+    return gulp.src( path.join( BASE_PATHS.dest, 'index.html' ) )
+        .pipe( plugins.inject( svgs, { transform: fileContents } ))
+        .pipe( gulp.dest(  BASE_PATHS.dest ) );
+} );
+
+
+/**
  * Serve app
  */
 gulp.task('connect', function() {
@@ -113,7 +142,8 @@ gulp.task('default',
         'copy:libs',
         'compile:typescript',
         'copy:index',
-        'stylesheets'
+        'stylesheets',
+        'svgstore'
     )
 );
 
